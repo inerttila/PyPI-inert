@@ -8,7 +8,7 @@ import numpy as np
 from botocore.exceptions import NoCredentialsError
 from tqdm import tqdm
 
-from yolov5.utils.general import colorstr
+from inert.utils.general import colorstr
 
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")

@@ -67,12 +67,12 @@ if str(ROOT) not in sys.path:
 if platform.system() != 'Windows':
     ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-from yolov5.models.experimental import attempt_load
-from yolov5.models.yolo import ClassificationModel, Detect, DetectionModel, SegmentationModel
-from yolov5.utils.dataloaders import LoadImages
-from yolov5.utils.general import (LOGGER, Profile, check_dataset, check_img_size, check_requirements, check_version,
+from inert.models.experimental import attempt_load
+from inert.models.yolo import ClassificationModel, Detect, DetectionModel, SegmentationModel
+from inert.utils.dataloaders import LoadImages
+from inert.utils.general import (LOGGER, Profile, check_dataset, check_img_size, check_requirements, check_version,
                            check_yaml, colorstr, file_size, get_default_args, print_args, url2file, yaml_save)
-from yolov5.utils.torch_utils import select_device, smart_inference_mode
+from inert.utils.torch_utils import select_device, smart_inference_mode
 
 MACOS = platform.system() == 'Darwin'  # macOS environment
 
@@ -349,7 +349,7 @@ def export_saved_model(model,
         import tensorflow as tf
     from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 
-    from yolov5.models.tf import TFModel
+    from inert.models.tf import TFModel
 
     LOGGER.info(f'\n{prefix} starting export with tensorflow {tf.__version__}...')
     f = str(file).replace('.pt', '_saved_model')
@@ -411,7 +411,7 @@ def export_tflite(keras_model, im, file, int8, data, nms, agnostic_nms, prefix=c
     converter.target_spec.supported_types = [tf.float16]
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
     if int8:
-        from yolov5.models.tf import representative_dataset_gen
+        from inert.models.tf import representative_dataset_gen
         dataset = LoadImages(check_dataset(check_yaml(data))['train'], img_size=imgsz, auto=False)
         converter.representative_dataset = lambda: representative_dataset_gen(dataset, ncalib=100)
         converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]

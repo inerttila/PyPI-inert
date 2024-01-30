@@ -34,7 +34,7 @@ import yaml
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 
-from yolov5.utils.roboflow import RoboflowConnector
+from inert.utils.roboflow import RoboflowConnector
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
@@ -43,23 +43,23 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 import yolov5.segment.val as validate  # for end-of-epoch mAP
-from yolov5.models.experimental import attempt_load
-from yolov5.models.yolo import SegmentationModel
-from yolov5.utils.autoanchor import check_anchors
-from yolov5.utils.autobatch import check_train_batch_size
-from yolov5.utils.callbacks import Callbacks
-from yolov5.utils.downloads import attempt_download, is_url, attempt_download_from_hub
-from yolov5.utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
+from inert.models.experimental import attempt_load
+from inert.models.yolo import SegmentationModel
+from inert.utils.autoanchor import check_anchors
+from inert.utils.autobatch import check_train_batch_size
+from inert.utils.callbacks import Callbacks
+from inert.utils.downloads import attempt_download, is_url, attempt_download_from_hub
+from inert.utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
                            check_git_status, check_img_size, check_requirements, check_suffix, check_yaml, colorstr,
                            get_latest_run, increment_path, init_seeds, intersect_dicts, labels_to_class_weights,
                            labels_to_image_weights, one_cycle, print_args, print_mutation, strip_optimizer, yaml_save)
-from yolov5.utils.loggers import GenericLogger
-from yolov5.utils.plots import plot_evolve, plot_labels
-from yolov5.utils.segment.dataloaders import create_dataloader
-from yolov5.utils.segment.loss import ComputeLoss
-from yolov5.utils.segment.metrics import KEYS, fitness
-from yolov5.utils.segment.plots import plot_images_and_masks, plot_results_with_masks
-from yolov5.utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
+from inert.utils.loggers import GenericLogger
+from inert.utils.plots import plot_evolve, plot_labels
+from inert.utils.segment.dataloaders import create_dataloader
+from inert.utils.segment.loss import ComputeLoss
+from inert.utils.segment.metrics import KEYS, fitness
+from inert.utils.segment.plots import plot_images_and_masks, plot_results_with_masks
+from inert.utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
                                smart_resume, torch_distributed_zero_first)
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
@@ -684,7 +684,7 @@ def run(**kwargs):
 
 def run_cli(**kwargs):
     '''
-    To be called from yolov5.cli
+    To be called from inert.cli
     '''
     opt = parse_opt(True)
     for k, v in kwargs.items():

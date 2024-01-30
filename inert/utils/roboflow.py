@@ -5,8 +5,8 @@ from roboflow import Roboflow
 from roboflow.core.version import Version
 from typing import Dict, Optional
 
-from yolov5.utils.plots import plot_results
-from yolov5.utils.general import LOGGER
+from inert.utils.plots import plot_results
+from inert.utils.general import LOGGER
 
 TASK2FORMAT: Dict[str, str] = {
     "detect": "yolov5",
