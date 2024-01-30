@@ -63,9 +63,9 @@ class Callbacks:
 
         Args:
             hook: The name of the hook to check, defaults to all
-            args: Arguments to receive from YOLOv5
+            args: Arguments to receive from inert
             thread: (boolean) Run callbacks in daemon thread
-            kwargs: Keyword Arguments to receive from YOLOv5
+            kwargs: Keyword Arguments to receive from inert
         """
 
         assert hook in self._callbacks, f"hook '{hook}' not found in callbacks {self._callbacks}"

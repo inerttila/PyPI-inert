@@ -10,12 +10,12 @@ from pathlib import Path
 import pkg_resources as pkg
 import torch
 
-from yolov5.utils.general import LOGGER, colorstr, cv2
-from yolov5.utils.loggers.clearml.clearml_utils import ClearmlLogger
-from yolov5.utils.loggers.neptune.neptune_utils import NeptuneLogger
-from yolov5.utils.loggers.wandb.wandb_utils import WandbLogger
-from yolov5.utils.plots import plot_images, plot_labels, plot_results
-from yolov5.utils.torch_utils import de_parallel
+from inert.utils.general import LOGGER, colorstr, cv2
+from inert.utils.loggers.clearml.clearml_utils import ClearmlLogger
+from inert.utils.loggers.neptune.neptune_utils import NeptuneLogger
+from inert.utils.loggers.wandb.wandb_utils import WandbLogger
+from inert.utils.plots import plot_images, plot_labels, plot_results
+from inert.utils.torch_utils import de_parallel
 
 LOGGERS = ('csv', 'tb', 'wandb', 'clearml', 'comet', 'neptune')  # *.csv, TensorBoard, Weights & Biases, ClearML
 RANK = int(os.getenv('RANK', -1))

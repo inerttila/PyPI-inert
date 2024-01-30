@@ -8,8 +8,8 @@ from copy import deepcopy
 import numpy as np
 import torch
 
-from yolov5.utils.general import LOGGER, colorstr
-from yolov5.utils.torch_utils import profile
+from inert.utils.general import LOGGER, colorstr
+from inert.utils.torch_utils import profile
 
 
 def check_train_batch_size(model, imgsz=640, amp=True):
@@ -22,7 +22,7 @@ def autobatch(model, imgsz=640, fraction=0.8, batch_size=16):
     # Automatically estimate best YOLOv5 batch size to use `fraction` of available CUDA memory
     # Usage:
     #     import torch
-    #     from yolov5.utils.autobatch import autobatch
+    #     from inert.utils.autobatch import autobatch
     #     model = torch.hub.load('ultralytics/yolov5', 'yolov5s', autoshape=False)
     #     print(autobatch(model))
 
