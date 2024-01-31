@@ -19,11 +19,11 @@ import seaborn as sn
 import torch
 from PIL import Image, ImageDraw, ImageFont
 
-from inert.utils import TryExcept, threaded
-from inert.utils.general import (CONFIG_DIR, FONT, LOGGER, check_font, check_requirements, clip_boxes, increment_path,
+from yolov5.utils import TryExcept, threaded
+from yolov5.utils.general import (CONFIG_DIR, FONT, LOGGER, check_font, check_requirements, clip_boxes, increment_path,
                            is_ascii, xywh2xyxy, xyxy2xywh)
-from inert.utils.metrics import fitness
-from inert.utils.segment.general import scale_image
+from yolov5.utils.metrics import fitness
+from yolov5.utils.segment.general import scale_image
 
 # Settings
 RANK = int(os.getenv('RANK', -1))
@@ -35,8 +35,8 @@ class Colors:
     # Ultralytics color palette https://ultralytics.com/
     def __init__(self):
         # hex = matplotlib.colors.TABLEAU_COLORS.values()
-        hexs = ('FF0000', '1200FF', 'FF701F', '00FF21', 'EDFF00', '00FFE1', 'B000FF', 'FF00B8', 'FF7F00', 'A8A6A6',
-                '424242', '720000', '3C7C00', '8BFFF6', 'CA98F2', 'FFFFFF', '5E1742', '6666A3', '00001F', '826F31')
+        hexs = ('FF3838', 'FF9D97', 'FF701F', 'FFB21D', 'CFD231', '48F90A', '92CC17', '3DDB86', '1A9334', '00D4BB',
+                '2C99A8', '00C2FF', '344593', '6473FF', '0018EC', '8438FF', '520085', 'CB38FF', 'FF95C8', 'FF37C7')
         self.palette = [self.hex2rgb(f'#{c}') for c in hexs]
         self.n = len(self.palette)
 
@@ -81,59 +81,39 @@ class Annotator:
                                        size=font_size or max(round(sum(self.im.size) / 2 * 0.035), 12))
         else:  # use cv2
             self.im = im
-        self.lw = line_width or max(round(sum(im.shape) / 2 * 0.03), 2)  # line width
+        self.lw = line_width or max(round(sum(im.shape) / 2 * 0.003), 2)  # line width
 
-    def box_label(self, box, label=None, color=(128, 128, 128), txt_color=None):
-
-
-        # Calculate the center of the original rectangle
-        center_x = (box[0] + box[2]) / 2
-        center_y = (box[1] + box[3]) / 2
-        #print(center_x, center_y)
-
-
-        # Calculate the coordinates for the square with a base of 5
-        new_box = [
-            center_x - 5,  # x1 (left)
-            center_y - 5,  # y1 (top)
-            center_x + 5,  # x2 (right)
-            center_y + 5   # y2 (bottom)
-        ]
+    def box_label(self, box, label='', color=(128, 128, 128), txt_color=(255, 255, 255)):
         # Add one xyxy box to image with label
         if self.pil or not is_ascii(label):
-            self.draw.rectangle(box, width=1, outline=color)  # box
-            self.draw.rectangle(new_box, width=1, outline=color)  # Draw a square
+            self.draw.rectangle(box, width=self.lw, outline=color)  # box
             if label:
                 w, h = self.font.getsize(label)  # text width, height (WARNING: deprecated) in 9.2.0
-                _, _, w, h = self.font.getbbox(label)  # text width, height (New)
+                # _, _, w, h = self.font.getbbox(label)  # text width, height (New)
                 outside = box[1] - h >= 0  # label fits outside box
                 self.draw.rectangle(
                     (box[0], box[1] - h if outside else box[1], box[0] + w + 1,
-                    box[1] + 1 if outside else box[1] + h + 1),
+                     box[1] + 1 if outside else box[1] + h + 1),
                     fill=color,
                 )
-        #     # self.draw.text((box[0], box[1]), label, fill=txt_color, font=self.font, anchor='ls')  # for PIL>8.0
-            #     self.draw.text((box[0], box[1] - h if outside else box[1]), label, fill=txt_color, font=self.font)
+                # self.draw.text((box[0], box[1]), label, fill=txt_color, font=self.font, anchor='ls')  # for PIL>8.0
+                self.draw.text((box[0], box[1] - h if outside else box[1]), label, fill=txt_color, font=self.font)
         else:  # cv2
-            p1, p2 = (int(new_box[0]), int(new_box[1])), (int(new_box[2]), int(new_box[3]))
-            cv2.rectangle(self.im, p1, p2, color, thickness=10, lineType=cv2.LINE_AA)
-
             p1, p2 = (int(box[0]), int(box[1])), (int(box[2]), int(box[3]))
-            cv2.rectangle(self.im, p1, p2, color, thickness=5, lineType=cv2.LINE_AA)
-
-            #if label:
-             #   tf = max(self.lw - 1, 1)  # font thickness
-             #   w, h = cv2.getTextSize(label, 0, fontScale=self.lw / 3, thickness=tf)[0]  # text width, height
-             #   outside = p1[1] - h >= 3
-              #  p2 = p1[0] + w, p1[1] - h - 3 if outside else p1[1] + h + 3
-              #  cv2.rectangle(self.im, p1, p2, color, -1, cv2.LINE_AA)  # filled
-                #cv2.putText(self.im,
-                 #           label, (p1[0], p1[1] - 2 if outside else p1[1] + h + 2),
-                  #          0,
-                   #         self.lw / 3,
-                    #        txt_color,
-                     #       thickness=tf,
-                      #      lineType=cv2.LINE_AA)
+            cv2.rectangle(self.im, p1, p2, color, thickness=self.lw, lineType=cv2.LINE_AA)
+            if label:
+                tf = max(self.lw - 1, 1)  # font thickness
+                w, h = cv2.getTextSize(label, 0, fontScale=self.lw / 3, thickness=tf)[0]  # text width, height
+                outside = p1[1] - h >= 3
+                p2 = p1[0] + w, p1[1] - h - 3 if outside else p1[1] + h + 3
+                cv2.rectangle(self.im, p1, p2, color, -1, cv2.LINE_AA)  # filled
+                cv2.putText(self.im,
+                            label, (p1[0], p1[1] - 2 if outside else p1[1] + h + 2),
+                            0,
+                            self.lw / 3,
+                            txt_color,
+                            thickness=tf,
+                            lineType=cv2.LINE_AA)
 
     def masks(self, masks, colors, im_gpu, alpha=0.5, retina_masks=False):
         """Plot masks at once.
@@ -170,11 +150,11 @@ class Annotator:
         self.draw.rectangle(xy, fill, outline, width)
 
     def text(self, xy, text, txt_color=(255, 255, 255), anchor='top'):
-         # Add text to image (PIL-only)
-         if anchor == 'bottom':  # start y from font bottom
+        # Add text to image (PIL-only)
+        if anchor == 'bottom':  # start y from font bottom
             w, h = self.font.getsize(text)  # text width, height
             xy[1] += 1 - h
-            self.draw.text(xy, text, fill=txt_color, font=self.font)
+        self.draw.text(xy, text, fill=txt_color, font=self.font)
 
     def fromarray(self, im):
         # Update self.im from a numpy array
@@ -451,7 +431,7 @@ def plot_labels(labels, names=(), save_dir=Path('')):
 
 def imshow_cls(im, labels=None, pred=None, names=None, nmax=25, verbose=False, f=Path('images.jpg')):
     # Show classification image grid with labels (optional) and predictions (optional)
-    from inert.utils.augmentations import denormalize
+    from yolov5.utils.augmentations import denormalize
 
     names = names or [f'class{i}' for i in range(1000)]
     blocks = torch.chunk(denormalize(im.clone()).cpu().float(), len(im),

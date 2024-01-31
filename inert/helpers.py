@@ -1,11 +1,11 @@
 from pathlib import Path
 import warnings
 
-from inert.models.common import AutoShape, DetectMultiBackend
-from inert.models.experimental import attempt_load
-from inert.models.yolo import ClassificationModel, SegmentationModel
-from inert.utils.general import LOGGER, logging
-from inert.utils.torch_utils import select_device
+from yolov5.models.common import AutoShape, DetectMultiBackend
+from yolov5.models.experimental import attempt_load
+from yolov5.models.yolo import ClassificationModel, SegmentationModel
+from yolov5.utils.general import LOGGER, logging
+from yolov5.utils.torch_utils import select_device
 
 
 def load_model(
@@ -25,7 +25,7 @@ def load_model(
     Returns:
         pytorch model
 
-    (Adapted from inert.hubconf.create)
+    (Adapted from yolov5.hubconf.create)
     """
     # set logging
     if not verbose:
@@ -101,7 +101,7 @@ class YOLOv5:
 def generate_model_usage_markdown(
     repo_id, ap50, task="object-detection", input_size=640, dataset_id=None
 ):
-    from inert import __version__ as yolov5_version
+    from yolov5 import __version__ as yolov5_version
 
     if dataset_id is not None:
         datasets_str_1 = f"""
@@ -345,8 +345,8 @@ def push_to_hfhub(
     best_ap50=None,
     task="object-detection",
 ):
-    from inert.utils.general import colorstr
-    from inert.helpers import (
+    from yolov5.utils.general import colorstr
+    from yolov5.helpers import (
         push_config_to_hfhub,
         push_model_card_to_hfhub,
         push_model_to_hfhub,
@@ -398,7 +398,7 @@ def convert_coco_dataset_to_yolo(opt, save_dir):
 
     if is_coco_data:
         from sahi.utils.coco import export_coco_as_yolov5_via_yml
-        from inert.utils.general import is_colab
+        from yolov5.utils.general import is_colab
         
         disable_symlink = False
         if is_colab():
@@ -439,8 +439,8 @@ def convert_coco_dataset_to_yolo(opt, save_dir):
 def upload_to_s3(opt, data, save_dir):
     import yaml
     import os
-    from inert.utils.general import colorstr
-    from inert.utils.aws import upload_file_to_s3, upload_folder_to_s3
+    from yolov5.utils.general import colorstr
+    from yolov5.utils.aws import upload_file_to_s3, upload_folder_to_s3
 
     with open(data, errors="ignore") as f:
         data_info = yaml.safe_load(f)  # load data dict

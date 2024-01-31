@@ -30,12 +30,12 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
     """
     from pathlib import Path
 
-    from inert.models.common import AutoShape, DetectMultiBackend
-    from inert.models.experimental import attempt_load
-    from inert.models.yolo import ClassificationModel, DetectionModel, SegmentationModel
-    from inert.utils.downloads import attempt_download
-    from inert.utils.general import LOGGER, check_requirements, intersect_dicts, logging
-    from inert.utils.torch_utils import select_device
+    from yolov5.models.common import AutoShape, DetectMultiBackend
+    from yolov5.models.experimental import attempt_load
+    from yolov5.models.yolo import ClassificationModel, DetectionModel, SegmentationModel
+    from yolov5.utils.downloads import attempt_download
+    from yolov5.utils.general import LOGGER, check_requirements, intersect_dicts, logging
+    from yolov5.utils.torch_utils import select_device
 
     if not verbose:
         LOGGER.setLevel(logging.WARNING)
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     import numpy as np
     from PIL import Image
 
-    from inert.utils.general import cv2, print_args
+    from yolov5.utils.general import cv2, print_args
 
     # Argparser
     parser = argparse.ArgumentParser()

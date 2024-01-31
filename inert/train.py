@@ -34,10 +34,10 @@ import yaml
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 
-from inert.helpers import (convert_coco_dataset_to_yolo, push_to_hfhub,
+from yolov5.helpers import (convert_coco_dataset_to_yolo, push_to_hfhub,
                             upload_to_s3)
-from inert import __version__
-from inert.utils.roboflow import RoboflowConnector
+from yolov5 import __version__
+from yolov5.utils.roboflow import RoboflowConnector
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -46,24 +46,24 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 import yolov5.val as validate  # for end-of-epoch mAP
-from inert.models.experimental import attempt_load
-from inert.models.yolo import Model
-from inert.utils.autoanchor import check_anchors
-from inert.utils.autobatch import check_train_batch_size
-from inert.utils.callbacks import Callbacks
-from inert.utils.dataloaders import create_dataloader
-from inert.utils.downloads import attempt_download, is_url, attempt_download_from_hub
-from inert.utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
+from yolov5.models.experimental import attempt_load
+from yolov5.models.yolo import Model
+from yolov5.utils.autoanchor import check_anchors
+from yolov5.utils.autobatch import check_train_batch_size
+from yolov5.utils.callbacks import Callbacks
+from yolov5.utils.dataloaders import create_dataloader
+from yolov5.utils.downloads import attempt_download, is_url, attempt_download_from_hub
+from yolov5.utils.general import (LOGGER, TQDM_BAR_FORMAT, check_amp, check_dataset, check_file, check_git_info,
                            check_git_status, check_img_size, check_requirements, check_suffix, check_yaml, colorstr,
                            get_latest_run, increment_path, init_seeds, intersect_dicts, labels_to_class_weights,
                            labels_to_image_weights, methods, one_cycle, print_args, print_mutation, strip_optimizer,
                            yaml_save)
-from inert.utils.loggers import Loggers
-from inert.utils.loggers.comet.comet_utils import check_comet_resume
-from inert.utils.loss import ComputeLoss
-from inert.utils.metrics import fitness
-from inert.utils.plots import plot_evolve
-from inert.utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
+from yolov5.utils.loggers import Loggers
+from yolov5.utils.loggers.comet.comet_utils import check_comet_resume
+from yolov5.utils.loss import ComputeLoss
+from yolov5.utils.metrics import fitness
+from yolov5.utils.plots import plot_evolve
+from yolov5.utils.torch_utils import (EarlyStopping, ModelEMA, de_parallel, select_device, smart_DDP, smart_optimizer,
                                smart_resume, torch_distributed_zero_first)
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
@@ -412,7 +412,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
 
                 # upload best model to aws s3
                 if opt.s3_upload_dir:
-                    from inert.utils.aws import upload_file_to_s3
+                    from yolov5.utils.aws import upload_file_to_s3
 
                     s3_file = "s3://" + str(Path(opt.s3_upload_dir.replace("s3://","")) / save_dir.name / "weights" / "best.pt").replace(os.sep, '/')
                     LOGGER.info(f"{colorstr('aws:')} Uploading best weight to AWS S3...")
@@ -459,7 +459,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
 
         # upload best model to aws s3
         if opt.s3_upload_dir:
-            from inert.utils.aws import upload_file_to_s3
+            from yolov5.utils.aws import upload_file_to_s3
 
             s3_file = "s3://" + str(Path(opt.s3_upload_dir.replace("s3://","")) / save_dir.name / "weights" / "best.pt").replace(os.sep, '/')
             LOGGER.info(f"{colorstr('aws:')} Uploading best weight to AWS S3...")
@@ -722,7 +722,7 @@ def run(**kwargs):
 
 def run_cli(**kwargs):
     '''
-    To be called from inert.cli
+    To be called from yolov5.cli
     '''
     opt = parse_opt(True)
     for k, v in kwargs.items():

@@ -9,7 +9,7 @@ import sys
 from contextlib import contextmanager
 from pathlib import Path
 
-from inert.utils.general import LOGGER, colorstr
+from yolov5.utils.general import LOGGER, colorstr
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[3]  # YOLOv5 root directory
@@ -19,7 +19,7 @@ RANK = int(os.getenv('RANK', -1))
 DEPRECATION_WARNING = f"{colorstr('wandb')}: WARNING ⚠️ wandb is deprecated and will be removed in a future release. " \
                       f'See supported integrations at https://github.com/ultralytics/yolov5#integrations.'
 
-from inert import __version__
+from yolov5 import __version__
 
 try:
     import wandb

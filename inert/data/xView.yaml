@@ -7,10 +7,11 @@
 # └── datasets
 #     └── xView  ← downloads here (20.7 GB)
 
+
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
-path: ../datasets/xView # dataset root dir
-train: images/autosplit_train.txt # train images (relative to 'path') 90% of 847 train images
-val: images/autosplit_val.txt # train images (relative to 'path') 10% of 847 train images
+path: ../datasets/xView  # dataset root dir
+train: images/autosplit_train.txt  # train images (relative to 'path') 90% of 847 train images
+val: images/autosplit_val.txt  # train images (relative to 'path') 10% of 847 train images
 
 # Classes
 names:
@@ -75,6 +76,7 @@ names:
   58: Pylon
   59: Tower
 
+
 # Download script/URL (optional) ---------------------------------------------------------------------------------------
 download: |
   import json
@@ -85,8 +87,8 @@ download: |
   from PIL import Image
   from tqdm import tqdm
 
-  from inert.utils.dataloaders import autosplit
-  from inert.utils.general import download, xyxy2xywhn
+  from yolov5.utils.dataloaders import autosplit
+  from yolov5.utils.general import download, xyxy2xywhn
 
 
   def convert_labels(fname=Path('xView/xView_train.geojson')):

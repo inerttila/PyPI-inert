@@ -30,8 +30,8 @@ import torchvision
 from torch.cuda import amp
 from tqdm import tqdm
 
-from inert.utils.downloads import attempt_download_from_hub
-from inert.utils.roboflow import RoboflowConnector
+from yolov5.utils.downloads import attempt_download_from_hub
+from yolov5.utils.roboflow import RoboflowConnector
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
@@ -39,15 +39,15 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-from inert.classify import val as validate
-from inert.models.experimental import attempt_load
-from inert.models.yolo import ClassificationModel, DetectionModel
-from inert.utils.dataloaders import create_classification_dataloader
-from inert.utils.general import (DATASETS_DIR, LOGGER, TQDM_BAR_FORMAT, WorkingDirectory, check_git_info, check_git_status,
+from yolov5.classify import val as validate
+from yolov5.models.experimental import attempt_load
+from yolov5.models.yolo import ClassificationModel, DetectionModel
+from yolov5.utils.dataloaders import create_classification_dataloader
+from yolov5.utils.general import (DATASETS_DIR, LOGGER, TQDM_BAR_FORMAT, WorkingDirectory, check_git_info, check_git_status,
                            check_requirements, colorstr, download, increment_path, init_seeds, print_args, yaml_save)
-from inert.utils.loggers import GenericLogger
-from inert.utils.plots import imshow_cls
-from inert.utils.torch_utils import (ModelEMA, de_parallel, model_info, reshape_classifier_output, select_device, smart_DDP,
+from yolov5.utils.loggers import GenericLogger
+from yolov5.utils.plots import imshow_cls
+from yolov5.utils.torch_utils import (ModelEMA, de_parallel, model_info, reshape_classifier_output, select_device, smart_DDP,
                                smart_optimizer, smartCrossEntropyLoss, torch_distributed_zero_first)
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
@@ -338,7 +338,7 @@ def main(opt):
 
 
 def run(**kwargs):
-    # Usage: from inert import classify; classify.train.run(data=mnist, imgsz=320, model='yolov5m')
+    # Usage: from yolov5 import classify; classify.train.run(data=mnist, imgsz=320, model='yolov5m')
     opt = parse_opt(True)
     for k, v in kwargs.items():
         setattr(opt, k, v)
@@ -347,7 +347,7 @@ def run(**kwargs):
 
 def run_cli(**kwargs):
     '''
-    To be called from inert.cli
+    To be called from yolov5.cli
     '''
     opt = parse_opt(True)
     for k, v in kwargs.items():
